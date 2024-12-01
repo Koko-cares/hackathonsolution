@@ -1,7 +1,7 @@
 # Hackathon Solution
 
-Streamlining Hackathon Bounty Payments with Smart Contracts
-Problem Statement
+#Streamlining Hackathon Bounty Payments with Smart Contracts#
+##Problem Statement##
 Hackathons are a breeding ground for innovation, yet the current bounty payment process often undermines their efficiency and principles. Issues include:
 Delays: Payments to winners can take weeks, discouraging participation
 Liability: Organizers shoulder excessive risk for unfulfilled payments or disputes.
@@ -14,12 +14,14 @@ Core Features
 Escrow Contract for Bounty Funds:
 
 
-Sponsors deposit bounty funds into an escrow contract before the hackathon begins.
-The contract is jointly controlled by the sponsor and the hackathon organizer, ensuring shared responsibility over the funds 
+- Sponsors deposit bounty funds into an escrow contract before the hackathon begins.
+- The contract is jointly controlled by the sponsor and the hackathon organizer, ensuring shared responsibility over the funds 
+
 Configurable Challenge Setup:
-Sponsors specify the number of challenges within a bounty and the total reward allocation upon deposit. (ex. Optimism Bounty with 3 challenges, the Prosperity Paradox, the Calculator, the DeFI for the Superchain) 
-Bounty configuration options are immutable once the hackathon starts. **could be a bad feature but I think it will be important for accountability before a hackathon starts**
-Automated Winner Distribution:
+- Sponsors specify the number of challenges within a bounty and the total reward allocation upon deposit. (ex. Optimism Bounty with 3 challenges, the Prosperity Paradox, the Calculator, the DeFI for the Superchain)
+- Bounty configuration options are immutable once the hackathon starts. **could be a bad feature but I think it will be important for accountability before a hackathon starts**
+
+#Automated Winner Distribution:#
 
 
 Once winners are determined, winners are given access to a dashboard to input their wallet addresses into the system.
