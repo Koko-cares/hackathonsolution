@@ -85,7 +85,7 @@ Timelocks: Prevent premature or delayed payouts.
 Audited Smart Contracts: Guarantees reliability and security.
 Fallbacks: Enables fund recovery in edge cases such as disputes or errors.
 
-**Questions to Answer (Comments Welcome) **
+**Questions to Answer (Comments Welcome)**
 - Should KYC process be implemented into this from the start or sponsors still want their own KYC process?
 - Will it make sense to be immutable in the challenges after the hackathon starts? Or does it make more sense to allow flexibility based on the hackathon submission results
 - How can this be a standalone product that gets added to any hackathon platform (ex. Aya, Dora, Taikai etc)
