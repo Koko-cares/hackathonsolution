@@ -5,16 +5,26 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract HackathonEscrow is ReentrancyGuard {
+    error HackathonEscrow__OnlyOrganizerCanAccess();
+    error HackathonEscrow__OnlySponsorCanAccess();
+    error HackathonEscrow__ConfigurationLocked();
+    error HackathonEscrow__ChallengeDoesNotExist();
+    error HackathonEscrow__OrganizerAddressCannotBeZero();
+    error HackathonEscrow__InvalidTokenOrAmount();
+    error HackathonEscrow__InvalidERC20Transfer();
+    error HackathonEscrow__ChallengeAlreadyConfigured();
+    error HackathonEscrow__InvalidTokenOrPrize();
+    error HackathonEscrow__TotalPercentageIsNotOneHundred();
+    error HackathonEscrow__ChallengeIsNotConfigured();
+    error HackathonEscrow__WinnersAreNotEqualToPrizeAllocations();
+    error HackathonEscrow__WinnerAlreadyAdded();
+    error HackathonEscrow__ChallengeIsAlreadyPaidOut();
+    error HackathonEscrow__OrganizerAlreadyApproved();
+    error HackathonEscrow__SponsorAlreadyApproved();
+    error HackathonEscrow__UnauthorizedAccess();
+    error HackathonEscrow__NotEnoughApprovals();
+
     error InvalidInput();
-    error UnauthorizedAccess();
-    error InsufficientFunds();
-    error AlreadyApproved();
-    error NotEnoughApprovals();
-    error ConfigurationLocked();
-    error ChallengeDoesNotExist();
-    error InvalidERC20Transfer();
-    error WinnerAlreadyAdded();
-    error ChallengeAlreadyConfigured();
 
     struct PrizeAllocation {
         uint8 position;
@@ -48,57 +58,50 @@ contract HackathonEscrow is ReentrancyGuard {
 
     // Events
     event SponsorAdded(address indexed sponsor);
-    event FundsDeposited(
-        address indexed sponsor,
-        uint256 challengeId,
-        uint256 amount
-    );
+    event FundsDeposited(address indexed sponsor, uint256 challengeId, uint256 amount);
     event ChallengeAdded(uint256 indexed challengeId, string sponsorName);
     event ChallengeConfigured(
-        uint256 indexed challengeId,
-        uint256 prize,
-        address token,
-        PrizeAllocation[] prizeAllocations
+        uint256 indexed challengeId, uint256 prize, address token, PrizeAllocation[] prizeAllocations
     );
     event WinnersAdded(uint256 indexed challengeId, PrizeAllocation[] winners);
     event FundsApproved(uint256 indexed challengeId, address approver);
-    event FundsDistributed(
-        uint256 indexed challengeId,
-        PrizeAllocation[] winners
-    );
+    event FundsDistributed(uint256 indexed challengeId, PrizeAllocation[] winners);
     event ConfigurationLockedEvent();
 
     // Modifiers
     modifier onlyOrganizer() {
-        if (msg.sender != organizer) revert UnauthorizedAccess();
+        if (msg.sender != organizer) revert HackathonEscrow__OnlyOrganizerCanAccess();
         _;
     }
 
     modifier onlySponsor(uint256 _challengeId) {
-        if (challenges[_challengeId].sponsor != msg.sender)
-            revert UnauthorizedAccess();
+        if (challenges[_challengeId].sponsor != msg.sender) {
+            revert HackathonEscrow__OnlySponsorCanAccess();
+        }
         _;
     }
 
     modifier beforeLock() {
-        if (isConfigurationLocked) revert ConfigurationLocked();
+        if (isConfigurationLocked) revert HackathonEscrow__ConfigurationLocked();
         _;
     }
 
     modifier challengeExists(uint256 _challengeId) {
         if (bytes(challenges[_challengeId].sponsorName).length == 0) {
-            revert ChallengeDoesNotExist();
+            revert HackathonEscrow__ChallengeDoesNotExist();
         }
         _;
     }
 
     constructor(address _organizer) {
-        if (_organizer == address(0)) revert InvalidInput();
+        if (_organizer == address(0)) revert HackathonEscrow__OrganizerAddressCannotBeZero();
         organizer = _organizer;
+        challengeCount = 0;
     }
 
     // Add Challenge
     function addChallenge(string calldata _sponsorName) external beforeLock {
+        // what exactly is the purpose of this check?????
         if (bytes(_sponsorName).length == 0) revert InvalidInput();
 
         uint256 challengeId = challengeCount++;
@@ -116,25 +119,17 @@ contract HackathonEscrow is ReentrancyGuard {
     }
 
     // Deposit Funds
-    function depositFunds(
-        uint256 _challengeId,
-        uint256 _amount,
-        address _token
-    )
+    function depositFunds(uint256 _challengeId, uint256 _amount, address _token)
         external
         onlySponsor(_challengeId)
         beforeLock
         challengeExists(_challengeId)
     {
-        if (_amount == 0 || _token == address(0)) revert InvalidInput();
+        if (_amount == 0 || _token == address(0)) revert HackathonEscrow__InvalidTokenOrAmount();
 
         // Transfer tokens to contract with strict validation
-        bool success = IERC20(_token).transferFrom(
-            msg.sender,
-            address(this),
-            _amount
-        );
-        if (!success) revert InvalidERC20Transfer();
+        bool success = IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+        if (!success) revert HackathonEscrow__InvalidERC20Transfer();
 
         challenges[_challengeId].totalPrize += _amount;
         challenges[_challengeId].token = _token;
@@ -151,47 +146,45 @@ contract HackathonEscrow is ReentrancyGuard {
     ) external onlyOrganizer beforeLock challengeExists(_challengeId) {
         Challenge storage challenge = challenges[_challengeId];
 
-        if (challenge.isConfigured) revert ChallengeAlreadyConfigured();
-        if (_totalPrize == 0 || _token == address(0)) revert InvalidInput();
+        if (challenge.isConfigured) revert HackathonEscrow__ChallengeAlreadyConfigured();
+        if (_totalPrize == 0 || _token == address(0)) revert HackathonEscrow__InvalidTokenOrPrize();
 
         uint256 totalPercentage;
-        for (uint i = 0; i < _prizeAllocations.length; i++) {
+        for (uint256 i = 0; i < _prizeAllocations.length; i++) {
             totalPercentage += _prizeAllocations[i].percentage;
         }
-        if (totalPercentage != 100) revert InvalidInput();
+        // ????????????
+        if (totalPercentage != 100) revert HackathonEscrow__TotalPercentageIsNotOneHundred();
 
         challenge.totalPrize = _totalPrize;
         challenge.token = _token;
         challenge.isConfigured = true;
 
         delete challenge.prizeAllocations;
-        for (uint i = 0; i < _prizeAllocations.length; i++) {
+        for (uint256 i = 0; i < _prizeAllocations.length; i++) {
             challenge.prizeAllocations.push(_prizeAllocations[i]);
         }
 
-        emit ChallengeConfigured(
-            _challengeId,
-            _totalPrize,
-            _token,
-            _prizeAllocations
-        );
+        emit ChallengeConfigured(_challengeId, _totalPrize, _token, _prizeAllocations);
     }
 
     // Add Winners
-    function addWinners(
-        uint256 _challengeId,
-        address[] calldata _winners
-    ) external onlyOrganizer challengeExists(_challengeId) {
+    function addWinners(uint256 _challengeId, address[] calldata _winners)
+        external
+        onlyOrganizer
+        challengeExists(_challengeId)
+    {
         Challenge storage challenge = challenges[_challengeId];
-
-        if (!challenge.isConfigured) revert InvalidInput();
-        if (_winners.length != challenge.prizeAllocations.length)
-            revert InvalidInput();
+        // Is this checking if the challenge has been configured???
+        if (!challenge.isConfigured) revert HackathonEscrow__ChallengeIsNotConfigured();
+        if (_winners.length != challenge.prizeAllocations.length) {
+            revert HackathonEscrow__WinnersAreNotEqualToPrizeAllocations();
+        }
 
         // Validate winners are unique
-        for (uint i = 0; i < _winners.length; i++) {
-            for (uint j = i + 1; j < _winners.length; j++) {
-                if (_winners[i] == _winners[j]) revert WinnerAlreadyAdded();
+        for (uint256 i = 0; i < _winners.length; i++) {
+            for (uint256 j = i + 1; j < _winners.length; j++) {
+                if (_winners[i] == _winners[j]) revert HackathonEscrow__WinnerAlreadyAdded();
             }
             challenge.prizeAllocations[i].winner = _winners[i];
         }
@@ -200,9 +193,7 @@ contract HackathonEscrow is ReentrancyGuard {
     }
 
     // Distribute Funds
-    function distributeFunds(
-        uint256 _challengeId
-    )
+    function distributeFunds(uint256 _challengeId)
         external
         nonReentrant
         onlySponsor(_challengeId)
@@ -211,20 +202,18 @@ contract HackathonEscrow is ReentrancyGuard {
         Challenge storage challenge = challenges[_challengeId];
         Approval storage approval = challengeApprovals[_challengeId];
 
-        if (!approval.organizerApproved || !approval.sponsorApproved)
-            revert NotEnoughApprovals();
-        if (challenge.isPaidOut) revert InvalidInput();
+        if (!approval.organizerApproved || !approval.sponsorApproved) {
+            revert HackathonEscrow__NotEnoughApprovals();
+        }
+        // revert if challenge is aready paid out?????
+        if (challenge.isPaidOut) revert HackathonEscrow__ChallengeIsAlreadyPaidOut();
 
-        for (uint i = 0; i < challenge.prizeAllocations.length; i++) {
+        for (uint256 i = 0; i < challenge.prizeAllocations.length; i++) {
             PrizeAllocation memory allocation = challenge.prizeAllocations[i];
-            uint256 prizeAmount = (challenge.totalPrize *
-                allocation.percentage) / 100;
+            uint256 prizeAmount = (challenge.totalPrize * allocation.percentage) / 100;
 
-            bool success = IERC20(challenge.token).transfer(
-                allocation.winner,
-                prizeAmount
-            );
-            if (!success) revert InvalidERC20Transfer();
+            bool success = IERC20(challenge.token).transfer(allocation.winner, prizeAmount);
+            if (!success) revert HackathonEscrow__InvalidERC20Transfer();
         }
 
         challenge.isPaidOut = true;
@@ -239,19 +228,17 @@ contract HackathonEscrow is ReentrancyGuard {
     }
 
     // Approve Funds
-    function approveFundsDistribution(
-        uint256 _challengeId
-    ) external challengeExists(_challengeId) {
+    function approveFundsDistribution(uint256 _challengeId) external challengeExists(_challengeId) {
         Approval storage approval = challengeApprovals[_challengeId];
 
         if (msg.sender == organizer) {
-            if (approval.organizerApproved) revert AlreadyApproved();
+            if (approval.organizerApproved) revert HackathonEscrow__OrganizerAlreadyApproved();
             approval.organizerApproved = true;
         } else if (challenges[_challengeId].sponsor == msg.sender) {
-            if (approval.sponsorApproved) revert AlreadyApproved();
+            if (approval.sponsorApproved) revert HackathonEscrow__SponsorAlreadyApproved();
             approval.sponsorApproved = true;
         } else {
-            revert UnauthorizedAccess();
+            revert HackathonEscrow__UnauthorizedAccess();
         }
 
         emit FundsApproved(_challengeId, msg.sender);
