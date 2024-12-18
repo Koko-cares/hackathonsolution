@@ -42,6 +42,13 @@ function Hero() {
         alt="star"
         className="absolute top-[22%] left-4"
       />
+      <Image
+        src="/floating-hero-bottom.svg"
+        width={70}
+        height={70}
+        alt="star2"
+        className="absolute bottom-[10%] right-[30%]"
+      />
     </div>
   );
 }
