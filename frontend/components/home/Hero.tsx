@@ -47,7 +47,7 @@ function Hero() {
         width={70}
         height={70}
         alt="star2"
-        className="absolute bottom-[10%] right-[30%]"
+        className="absolute bottom-[10%] right-[45%]"
       />
     </div>
   );
