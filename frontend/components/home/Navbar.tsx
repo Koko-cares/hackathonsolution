@@ -5,11 +5,23 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { IconSearch } from "@tabler/icons-react";
 
-function BrandHeader() {
+export function BrandHeader({ navbar }: { navbar?: boolean }) {
   return (
     <div className="flex gap-2 mx-2">
-      <Image src="/logo.svg" width={30} height={30} alt="logo" />
-      <h1 className="text-lg font-bold text-brand font-[family-name:var(--font-kode-mono)]">
+      <Image
+        src="/logo.svg"
+        width={30}
+        height={30}
+        alt="logo"
+        className={`${
+          navbar ? "" : "w-[20px] h-[20px]"
+        } text-brand font-[family-name:var(--font-kode-mono)]`}
+      />
+      <h1
+        className={`font-bold ${
+          navbar ? "text-lg" : "text-[13px]"
+        } text-brand font-[family-name:var(--font-kode-mono)]`}
+      >
         Hackathon Solutions
       </h1>
     </div>
