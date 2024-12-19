@@ -147,3 +147,5 @@ contract HackathonFactory {
         revert HackathonFactory__HackathonDoesNotExist(_name);
     }
 }
+
+// e _getHackathonByNameStorage and _getHackathonByName looks like they do the same thing
