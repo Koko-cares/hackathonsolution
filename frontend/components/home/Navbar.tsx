@@ -7,7 +7,7 @@ import { IconSearch } from "@tabler/icons-react";
 
 export function BrandHeader({ navbar }: { navbar?: boolean }) {
   return (
-    <div className="flex gap-2 mx-2">
+    <div className={`flex items-center space-x-2 ${navbar ? "pt-4" : ""}`}>
       <Image
         src="/logo.svg"
         width={30}

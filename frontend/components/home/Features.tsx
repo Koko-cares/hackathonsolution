@@ -37,12 +37,9 @@ function Features() {
   return (
     <div className="flex flex-col justify-center font-[family-name:var(--font-montserrat)] font-bold mt-32 mx-8">
       <h1 className="text-titles text-[40px]">Why Hackathon Solutions?</h1>
-      <h1 className="w-full text-[40px] font-semibold">
-        Hackathon Solutions comes in—a platform designed to make
-      </h1>
-      <h1 className="w-full text-[40px] font-semibold">
-        {" "}
-        your post-event process effortless, transparent, and efficient.
+      <h1 className="w-full lg:text-[40px] md:text-[30px] font-semibold">
+        Hackathon Solutions comes in—a platform designed to make your post-event
+        process effortless, transparent, and efficient.
       </h1>
       <p className="text-gray-700 text-[16px] mt-4 font-light mb-8">
         At Hackathon Solutions, we simplify post-hackathon reward management.
@@ -50,11 +47,11 @@ function Features() {
         platform ensures bounties are distributed fairly, quickly, and with
         precision.
       </p>
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-8 mt-12 max-w-7xl mx-auto my-0">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:gap-8 gap-4 mt-12 max-w-7xl mx-auto my-0">
         {features.map((feature) => (
           <div
             key={feature.id}
-            className={`flex group/item gap-2 items-center space-y-2 space-x-2 opacity-80 hover:opacity-100 w-[560px] h-[220px] shadow-lg p-4 rounded-lg hover:shadow-xl duration-300 ease-out transition-all cursor-pointer`}
+            className={`flex group/item gap-2 items-center space-y-2 space-x-2 opacity-80 hover:opacity-100 lg:w-[560px] md:w-[350px] h-[220px] shadow-lg p-4 rounded-lg hover:shadow-xl duration-300 ease-out transition-all cursor-pointer`}
             style={{
               backgroundImage: `url("/background-image.jpeg")`,
               backgroundSize: "contain",
@@ -72,20 +69,20 @@ function Features() {
               alt={feature.title}
               width={150}
               height={150}
-              className="group-hover/item:scale-105 transition-all ease-out duration-300 z-10"
+              className="group-hover/item:scale-105 transition-all ease-out duration-300 z-10 lg:h-[150px] md:h-[70px] lg:w-[150px] md:w-[70px]"
             />
             <div>
               <h2
                 className={`${
                   feature.id === 4 ? "text-subtitles" : "text-subtitles"
-                } mb-2 font-semibold text-[20px] group-hover/item:scale-105 transition-all ease-out duration-300 opacity-100 z-10`}
+                } mb-2 font-semibold lg:text-[20px] md:text-[16px] group-hover/item:scale-105 transition-all ease-out duration-300 opacity-100 z-10`}
               >
                 {feature.title}
               </h2>
               <p
                 className={`${
                   feature.id === 4 ? "text-subtitles" : "text-subtitles"
-                } text-[13px] font-light group-hover/item:scale-105 transition-all ease-out duration-300 pb-4 opacity-100`}
+                } lg:text-[13px] md:text-[12px] font-light group-hover/item:scale-105 transition-all ease-out duration-300 pb-4 opacity-100`}
               >
                 {feature.content}
               </p>

@@ -63,10 +63,10 @@ function Works() {
         <h1 className="w-full text-[40px] font-semibold text-titles max-w-xl">
           How it Works
         </h1>
-        <h1 className="w-full text-[40px] font-semibold max-w-3xl">
+        <h1 className="w-full lg:text-[40px] md:text-[30px] font-semibold">
           Our platform streamlines every step
         </h1>
-        <h1 className="w-full text-[40px] font-semibold max-w-xl">
+        <h1 className="w-full lg:text-[40px] md:text-[30px] font-semibold">
           of the process
         </h1>
         <p className="text-gray-700 text-[16px] mt-4 font-light mb-8 max-w-3xl">
@@ -88,7 +88,7 @@ function Works() {
           </button>
         </div>
       </div>
-      <div className="relative">
+      <div className="relative md:hidden lg:block">
         <Image
           src="/pen.svg"
           alt="pen"
