@@ -1,3 +1,4 @@
+import CTA from "@/components/home/CTA";
 import Features from "@/components/home/Features";
 import Hero from "@/components/home/Hero";
 import Navbar from "@/components/home/Navbar";
@@ -11,6 +12,7 @@ export default function Home() {
         <Hero />
         <Features />
         <Works />
+        <CTA />
       </div>
       <div className="flex md:hidden justify-center items-center mt-16 font-[family-name:var(--font-montserrat)] h-screen">
         <h1 className="text-[30px] text-black font-semibold text-center">
