@@ -78,6 +78,15 @@ function Works() {
         {steps.map((step) => (
           <Steps key={step.id} step={step} />
         ))}
+        <div className="mt-16 flex items-center gap-8 ml">
+          <button className="bg-[#000000] text-[#fff] font-semibold text-[16px] w-[170px] h-[45px] flex items-center justify-center  rounded-lg hover:shadow-lg duration-300 ease-out transition-all">
+            Host a Hackathon
+          </button>
+
+          <button className="bg-[#E6F2FF] text-brand font-semibold text-[16px]  w-[170px] h-[45px] flex items-center justify-center  rounded-lg hover:shadow-lg duration-300 ease-out transition-all">
+            View Whitepaper
+          </button>
+        </div>
       </div>
       <div className="relative">
         <Image
