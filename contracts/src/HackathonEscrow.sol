@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.28;
+pragma solidity 0.8.24;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -101,9 +101,14 @@ contract HackathonEscrow is ReentrancyGuard {
         if (_organizer == address(0)) revert HackathonEscrow__OrganizerAddressCannotBeZero();
         organizer = _organizer;
         challengeCount = 0;
+        // Add this line to initialize challengeApprovals state variable
+        challengeApprovals[0] = Approval(false, false);
     }
 
     // Add Challenge
+    // @ybtuti e this function is only callable by the sponsor, since sponsor is set to msg.sender
+    // @ybtuti This isn't correct since this will be called by the Hackathon factory contract, which will automatically make it the sponsor.
+    // @dev this need to be confirmed
     function addChallenge(string calldata _sponsorName) external beforeLock {
         // what exactly is the purpose of this check?????
         if (bytes(_sponsorName).length == 0) revert HackathonEscrow__SponsorNameCannotBeEmpty();
