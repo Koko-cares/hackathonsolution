@@ -106,11 +106,11 @@ contract HackathonEscrow is ReentrancyGuard {
     }
 
     // Add Challenge
-    // @ybtuti e this function is only callable by the sponsor, since sponsor is set to msg.sender
-    // @ybtuti This isn't correct since this will be called by the Hackathon factory contract, which will automatically make it the sponsor.
-    // @dev this need to be confirmed
+    // @ybtuti e this function is only callable by anyone
+    // @ybtuti q is there risk of frontrunning, and what would be the impact?
+    // @ybtuti Looks okay??
     function addChallenge(string calldata _sponsorName) external beforeLock {
-        // what exactly is the purpose of this check?????
+        // @ybtuti This checks if the sponsor name is empty
         if (bytes(_sponsorName).length == 0) revert HackathonEscrow__SponsorNameCannotBeEmpty();
 
         uint256 challengeId = challengeCount++;
@@ -221,6 +221,8 @@ contract HackathonEscrow is ReentrancyGuard {
             // 400 * 54 / 100 =
             // Looks good!!!!
             uint256 prizeAmount = (challenge.totalPrize * allocation.percentage) / 100;
+
+            // @ybtuti Funds won't be distributed since the challenge.token is initially set to 0 at the add challenge function
 
             IERC20(challenge.token).safeTransfer(allocation.winner, prizeAmount);
         }
